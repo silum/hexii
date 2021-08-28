@@ -1,0 +1,34 @@
+.Dd August 28, 2021
+.Dt HEXII 1
+.Os
+.Sh NAME
+.Nm hexii
+.Nd a compact binary representation (mixing Hex and ASCII)
+.Sh SYNOPSIS
+.Nm hexii
+.Op Fl c Ar number
+.Ar
+.Nm hexii
+.Op Fl V
+.Sh DESCRIPTION
+The
+.Nm
+utility dumps file in HexII format.
+HexII is a mixture of ASCII and Hex because ASCII dump is usually useless, unless there is an ASCII string,
+in which case the HEX part is useless.
+.Pp
+The following options are available:
+.Bl -tag -width Ds
+.It Fl c Ar number
+Format the output to
+.Ar number
+columns wide.
+.It Fl V
+Print version information.
+.El
+.Sh EXIT STATUS
+The Nm utility exits 0 on success, and >0 if an error occurs.
+.Sh SEE ALSO
+.Xr hexdump 1 ,
+.Xr od 1 ,
+.Xr xxd 1
