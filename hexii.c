@@ -158,7 +158,7 @@ hexii_r(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsign
 	unsigned i = 0;
 	for (; i < cols
 	     && off + i < len; i++) {
-		printf(" ");
+		putchar(' ');
 		hexii_c(buf[off + i]);
 	}
 
