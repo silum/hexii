@@ -1,0 +1,140 @@
+.Dd August 25, 2021
+.Dt ARG 3
+.Os
+.Sh NAME
+.
+.Nm ARGBEGIN ,
+.Nm ARGEND ,
+.Nm ARGC ,
+.Nm ARGF ,
+.Nm EARGF
+.Nd process option letters from argv
+.
+.Sh SYNOPSIS
+.
+.In arg.h
+.Fd ARGBEGIN {
+.Ft "char *"
+.Fn ARGF
+.Ft char
+.Fn ARGC
+.Ft "char *"
+.Fn EARGF code
+.Fd } ARGEND
+.Vt "extern char *" Ns Va argv0 ;
+.Sh DESCRIPTION
+These macros assume the names
+.Va argc
+and
+.Va argv
+are in scope; see
+.Xr exec 3 .
+.Dv ARGBEGIN
+and
+.Dv ARGEND
+surround code for processing program options.
+The code should be the cases of a C switch on option characters;
+it is executed once for each option character.
+Options end after an argument
+.Fl - ,
+before an argument
+.Fl ,
+or before an argument that doesn't begin with
+.Fl .
+.Pp
+The function macro
+.Fn ARGC
+returns the current option character, as an integer.
+.Pp
+The function macro
+.Fn ARGF
+returns the current option argument:
+a pointer to the rest of the option string if not empty,
+or the next argument in
+.Va argv
+if any, or 0.
+.Fn ARGF
+must be called just once for each option argument.
+The macro
+.Fn EARGF
+is like
+.Fn ARGF
+but instead of returning zero runs
+.Va code
+and, if that returns, calls
+.Xr exit 3 .
+A typical value for
+.Va code
+is
+.Fn usage ,
+as in
+.Ql EARGF(usage()) .
+.Pp
+After
+.Dv ARGBEGIN ,
+.Va argv0
+is a copy of
+.Va argv[0]
+(conventionally the name of the program).
+.Pp
+After
+.Dv ARGEND ,
+.Va argv
+points at a zero-terminated list of the remaining
+.Va argc
+arguments.
+.Sh EXAMPLES
+This C program can take option
+.Fl b
+and option
+.Fl f ,
+which requires an argument.
+.Bd -literal -offset indent
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "arg.h"
+
+char *argv0;
+
+int
+main(int argc, char *argv[])
+{
+	char *f;
+
+	printf("%s", argv[0]);
+
+	ARGBEGIN {
+	case 'b':
+		printf(" -b");
+		break;
+	case 'f':
+		printf(" -f(%s)", (f=ARGF())? f: "no arg");
+		break;
+	default:
+		printf(" badflag('%c')", ARGC());
+	} ARGEND
+
+	printf(" %d args:", argc);
+
+	while (*argv)
+		printf(" '%s'", *argv++);
+	printf("\en");
+
+	exit(EXIT_SUCCESS);
+}
+.Ed
+.Pp
+Here is the output from running the command
+.Ql prog -bffile1 -r -f file2 arg1 arg2
+.\" .Bd -unfilled -offset indent
+.Bd -unfilled -offset indent
+prog -b -f(file1) badflag('r') -f(file2) 2 args: 'arg1' 'arg2'
+.Ed
+.
+.Sh SEE ALSO
+.
+.Xr getopt 1 ,
+.Xr getopt_long 3 ,
+.Xr getsubopt 3 ,
+.Xr getopt 8

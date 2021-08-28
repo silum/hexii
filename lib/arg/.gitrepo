@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/silum/arg
+	branch = main
+	commit = b82e41fc260cc66c99c972d5e5ddc501da411550
+	parent = 8ebca9ded70465b555a1c15f850eb3e7de752511
+	method = merge
+	cmdver = 0.4.0
