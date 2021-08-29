@@ -8,6 +8,14 @@ CPPFLAGS += -I. -Ilib/arg
 .PHONY: all
 all: $(BIN)
 
+.PHONY: check
+check: t.sh $(BIN)
+	@./$<
+	@echo
+	@echo ================
+	@echo all tests passed
+	@echo ================
+
 .PHONY: clean
 clean:
 	$(RM) -- $(BIN) $(TESTS) *.o *.d
