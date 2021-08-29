@@ -34,6 +34,7 @@ static void usage(void);
 static void version(void);
 
 bool aflag = true;
+bool hflag = true;
 
 int
 main(int argc, char *argv[])
@@ -49,6 +50,12 @@ main(int argc, char *argv[])
 	case 'c':
 		cols = atoi(EARGF(usage()));
 		cols = (cols <= 0) ? 1 : cols;
+		break;
+	case 'h':
+		hflag = true;
+		break;
+	case 'H':
+		hflag = false;
 		break;
 	case 'V':
 		version();
@@ -151,7 +158,8 @@ hexii_c(unsigned char c)
 		printf("%s##%s",
 		       aflag_(ANSI_RED),
 		       aflag_(ANSI_RESET));
-	} else if (isprint(c) && ' ' != c) {
+	} else if ((isprint(c) && ' ' != c)
+		   || (' ' == c && !hflag)) {
 		printf("%s.%c%s",
 		       aflag_(ANSI_CYN), c,
 		       aflag_(ANSI_RESET));
@@ -224,7 +232,7 @@ static
 void
 usage(void)
 {
-	fprintf(stderr, "usage: %s [-aA] [-c num] FILE\n", argv0);
+	fprintf(stderr, "usage: %s [-aAhH] [-c num] FILE\n", argv0);
 	fprintf(stderr, "       %s -V\n", argv0);
 	exit(EXIT_FAILURE);
 }

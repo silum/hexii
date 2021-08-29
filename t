@@ -121,10 +121,43 @@ xcmp 2<<'!'
  FC: FC FD FE ## ]
 !
 
+# space as hex
+simple |
+xhexii -h |
+xcmp 2<<'!'
+    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+
+0: .m .i .n .: 20    09 .& 0A .m .a .x .: 20 ## ]
+!
+
+simple |
+xhexii -H |
+xcmp 2<<'!'
+    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+
+0: .m .i .n .: .     09 .& 0A .m .a .x .: .  ## ]
+!
+
+simple |
+xhexii -hH |
+xcmp 2<<'!'
+    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+
+0: .m .i .n .: .     09 .& 0A .m .a .x .: .  ## ]
+!
+
+simple |
+xhexii -Hh |
+xcmp 2<<'!'
+    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+
+0: .m .i .n .: 20    09 .& 0A .m .a .x .: 20 ## ]
+!
+
 # usage
 ./hexii 2>&1 |
 xcmp 2<<!
-usage: ./hexii [-aA] [-c num] FILE
+usage: ./hexii [-aAhH] [-c num] FILE
        ./hexii -V
 !
 
