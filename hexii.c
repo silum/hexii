@@ -37,6 +37,7 @@ bool aflag = true;
 bool hflag = true;
 bool sflag = true;
 bool verbose;
+bool xflag;
 
 int
 main(int argc, char *argv[])
@@ -73,6 +74,12 @@ main(int argc, char *argv[])
 		break;
 	case 'V':
 		version();
+		break;
+	case 'x':
+		xflag = true;
+		break;
+	case 'X':
+		xflag = false;
 		break;
 	default: usage();
 	} ARGEND
@@ -184,7 +191,7 @@ hexii_c(unsigned char c)
 		       aflag_(ANSI_CYN), c,
 		       aflag_(ANSI_RESET));
 	} else {
-		printf("%02X", c);
+		printf((xflag) ? "%02x" : "%02X", c);
 	}
 }
 
@@ -252,7 +259,7 @@ static
 void
 usage(void)
 {
-	fprintf(stderr, "usage: %s [-aAhHqsSv] [-c num] FILE\n", argv0);
+	fprintf(stderr, "usage: %s [-aAhHqsSvxX] [-c num] FILE\n", argv0);
 	fprintf(stderr, "       %s -V\n", argv0);
 	exit(EXIT_FAILURE);
 }
