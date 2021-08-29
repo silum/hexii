@@ -35,6 +35,7 @@ static void version(void);
 
 bool aflag = true;
 bool hflag = true;
+bool sflag = true;
 
 int
 main(int argc, char *argv[])
@@ -56,6 +57,12 @@ main(int argc, char *argv[])
 		break;
 	case 'H':
 		hflag = false;
+		break;
+	case 's':
+		sflag = true;
+		break;
+	case 'S':
+		sflag = false;
 		break;
 	case 'V':
 		version();
@@ -177,7 +184,7 @@ hexii_r(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsign
 	for (unsigned c = 0; c < ncols && zeros; c++) {
 		zeros = ('\0' == buf[off + c]);
 	}
-	if (zeros && ncols == cols) {
+	if (zeros && ncols == cols && sflag) {
 		return cols;
 	}
 
@@ -232,7 +239,7 @@ static
 void
 usage(void)
 {
-	fprintf(stderr, "usage: %s [-aAhH] [-c num] FILE\n", argv0);
+	fprintf(stderr, "usage: %s [-aAhHsS] [-c num] FILE\n", argv0);
 	fprintf(stderr, "       %s -V\n", argv0);
 	exit(EXIT_FAILURE);
 }
