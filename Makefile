@@ -9,7 +9,7 @@ CPPFLAGS += -I. -Ilib/arg
 all: $(BIN)
 
 .PHONY: check
-check: t.sh $(BIN)
+check: t $(BIN)
 	@./$<
 	@echo
 	@echo ================
