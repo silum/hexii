@@ -6,6 +6,14 @@ ascii() {
     awk 'BEGIN { for (x = 0; x < 256; x++) printf "%c", x }'
 }
 
+simple() {
+    printf "min: "
+    printf '\000'
+    printf "	&\n"
+    printf "max: "
+    printf '\377'
+}
+
 xcmp() {
     printf .
     cmp -s /dev/stdin /dev/stderr
@@ -48,6 +56,23 @@ xcmp 2<<'!'
  E0: E0 E1 E2 E3 E4 E5 E6 E7 E8 E9 EA EB EC ED EE EF
  F0: F0 F1 F2 F3 F4 F5 F6 F7 F8 F9 FA FB FC FD FE ##
 100: ]
+!
+
+# ansi
+simple |
+./hexii -a - |
+xcmp 2<<'!'
+  [0;33m  0[0m[0;33m  1[0m[0;33m  2[0m[0;33m  3[0m[0;33m  4[0m[0;33m  5[0m[0;33m  6[0m[0;33m  7[0m[0;33m  8[0m[0;33m  9[0m[0;33m  A[0m[0;33m  B[0m[0;33m  C[0m[0;33m  D[0m[0;33m  E[0m[0;33m  F[0m
+
+[0;33m0:[0m [0;36m.m[0m [0;36m.i[0m [0;36m.n[0m [0;36m.:[0m 20    09 [0;36m.&[0m 0A [0;36m.m[0m [0;36m.a[0m [0;36m.x[0m [0;36m.:[0m 20 [0;31m##[0m [1;37m][0m
+!
+
+simple |
+./hexii -A - |
+xcmp 2<<'!'
+    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+
+0: .m .i .n .: 20    09 .& 0A .m .a .x .: 20 ## ]
 !
 
 # columns
@@ -99,7 +124,7 @@ xcmp 2<<'!'
 # usage
 ./hexii 2>&1 |
 xcmp 2<<!
-usage: ./hexii [-c num] FILE
+usage: ./hexii [-aA] [-c num] FILE
        ./hexii -V
 !
 

@@ -33,11 +33,19 @@ static int hexii(int, unsigned);
 static void usage(void);
 static void version(void);
 
+bool aflag = true;
+
 int
 main(int argc, char *argv[])
 {
 	unsigned cols = 16;
 	ARGBEGIN {
+	case 'a':
+		aflag = true;
+		break;
+	case 'A':
+		aflag = false;
+		break;
 	case 'c':
 		cols = atoi(EARGF(usage()));
 		cols = (cols <= 0) ? 1 : cols;
@@ -80,6 +88,14 @@ main(int argc, char *argv[])
 }
 
 static
+inline
+const char *
+aflag_(const char *s)
+{
+	return (aflag) ? s : "";
+}
+
+static
 void
 addr(int wid, int off, int cols)
 {
@@ -91,11 +107,9 @@ addr(int wid, int off, int cols)
 	        : (log(xor) / log(16) + 1);
 	int val = off % (int)pow(16, w);
 
-	if (w == wid) {
-		printf("\n" ANSI_YEL "%0*X:" ANSI_RESET, wid, val);
-	} else {
-		printf("\n" ANSI_YEL "%*X:" ANSI_RESET, wid, val);
-	}
+	printf((w == wid) ? "\n%s%0*X:%s" : "\n%s%*X:%s",
+	       aflag_(ANSI_YEL), wid, val,
+	       aflag_(ANSI_RESET));
 
 	prev = off;
 }
@@ -120,7 +134,9 @@ head(int nspace, unsigned cols)
 {
 	printf("%*s", nspace, " ");
 	for (unsigned i = 0; i < cols; i++) {
-		printf(ANSI_YEL "%3X" ANSI_RESET, i);
+		printf("%s%3X%s",
+		       aflag_(ANSI_YEL), i,
+		       aflag_(ANSI_RESET));
 	}
 	puts("");
 }
@@ -132,9 +148,13 @@ hexii_c(unsigned char c)
 	if (0x00 == c) {
 		printf("  ");
 	} else if (0xff == c) {
-		printf(ANSI_RED "##" ANSI_RESET);
+		printf("%s##%s",
+		       aflag_(ANSI_RED),
+		       aflag_(ANSI_RESET));
 	} else if (isprint(c) && ' ' != c) {
-		printf(ANSI_CYN ".%c" ANSI_RESET, c);
+		printf("%s.%c%s",
+		       aflag_(ANSI_CYN), c,
+		       aflag_(ANSI_RESET));
 	} else {
 		printf("%02X", c);
 	}
@@ -185,7 +205,9 @@ hexii(int fd, unsigned cols)
 			if (0 == (off % cols)) {
 				addr(addr_wid, off, cols);
 			}
-			printf(" " ANSI_BWHT "]" ANSI_RESET "\n");
+			printf(" %s]%s\n",
+			       aflag_(ANSI_BWHT),
+			       aflag_(ANSI_RESET));
 			break;
 		}
 
@@ -202,7 +224,7 @@ static
 void
 usage(void)
 {
-	fprintf(stderr, "usage: %s [-c num] FILE\n", argv0);
+	fprintf(stderr, "usage: %s [-aA] [-c num] FILE\n", argv0);
 	fprintf(stderr, "       %s -V\n", argv0);
 	exit(EXIT_FAILURE);
 }
