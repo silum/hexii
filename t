@@ -96,4 +96,11 @@ xcmp 2<<'!'
  FC: FC FD FE ## ]
 !
 
+# usage
+./hexii 2>&1 |
+xcmp 2<<!
+usage: ./hexii [-c num] FILE
+       ./hexii -V
+!
+
 # -fin-
