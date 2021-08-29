@@ -154,6 +154,22 @@ xcmp 2<<'!'
 0: .m .i .n .: 20    09 .& 0A .m .a .x .: 20 ## ]
 !
 
+simple |
+xhexii -q |
+xcmp 2<<'!'
+    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+
+0: .m .i .n .: 20    09 .& 0A .m .a .x .: 20 ## ]
+!
+
+simple |
+xhexii -qv |
+xcmp 2<<'!'
+    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+
+0: .m .i .n .: 20 00 09 .& 0A .m .a .x .: 20 FF ]
+!
+
 # suppress nulls
 head -c 100 /dev/zero |
 xhexii -s |
@@ -199,10 +215,26 @@ xcmp 2<<'!'
 60:             ]
 !
 
+simple |
+xhexii -v |
+xcmp 2<<'!'
+    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+
+0: .m .i .n .: 20 00 09 .& 0A .m .a .x .: 20 FF ]
+!
+
+simple |
+xhexii -vq |
+xcmp 2<<'!'
+    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+
+0: .m .i .n .: 20    09 .& 0A .m .a .x .: 20 ## ]
+!
+
 # usage
 ./hexii 2>&1 |
 xcmp 2<<!
-usage: ./hexii [-aAhHsS] [-c num] FILE
+usage: ./hexii [-aAhHqsSv] [-c num] FILE
        ./hexii -V
 !
 

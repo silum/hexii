@@ -36,6 +36,7 @@ static void version(void);
 bool aflag = true;
 bool hflag = true;
 bool sflag = true;
+bool verbose;
 
 int
 main(int argc, char *argv[])
@@ -58,11 +59,17 @@ main(int argc, char *argv[])
 	case 'H':
 		hflag = false;
 		break;
+	case 'q':
+		verbose = false;
+		break;
 	case 's':
 		sflag = true;
 		break;
 	case 'S':
 		sflag = false;
+		break;
+	case 'v':
+		verbose = true;
 		break;
 	case 'V':
 		version();
@@ -160,10 +167,16 @@ void
 hexii_c(unsigned char c)
 {
 	if (0x00 == c) {
-		printf("  ");
+		if (verbose) {
+			printf("%s00%s",
+			       aflag_(ANSI_BBLK),
+			       aflag_(ANSI_RESET));
+		} else {
+			printf("  ");
+		}
 	} else if (0xff == c) {
-		printf("%s##%s",
-		       aflag_(ANSI_RED),
+		printf("%s%s%s",
+		       aflag_(ANSI_RED), ((verbose) ? "FF" : "##"),
 		       aflag_(ANSI_RESET));
 	} else if ((isprint(c) && ' ' != c)
 		   || (' ' == c && !hflag)) {
@@ -239,7 +252,7 @@ static
 void
 usage(void)
 {
-	fprintf(stderr, "usage: %s [-aAhHsS] [-c num] FILE\n", argv0);
+	fprintf(stderr, "usage: %s [-aAhHqsSv] [-c num] FILE\n", argv0);
 	fprintf(stderr, "       %s -V\n", argv0);
 	exit(EXIT_FAILURE);
 }
