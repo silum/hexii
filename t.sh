@@ -7,6 +7,7 @@ ascii() {
 }
 
 xcmp() {
+    printf .
     cmp -s /dev/stdin /dev/stderr
 }
 
@@ -16,7 +17,6 @@ xhexii() {
 }
 
 # more nulls than read buffer
-printf .
 head -c 8196 /dev/zero |
 xhexii |
 xcmp 2<<!
@@ -26,7 +26,6 @@ xcmp 2<<!
 !
 
 # all ASCII chars
-printf .
 ascii |
 xhexii |
 xcmp 2<<'!'
@@ -52,7 +51,6 @@ xcmp 2<<'!'
 !
 
 # columns
-printf .
 ascii |
 xhexii -c11 |
 xcmp 2<<'!'
@@ -84,7 +82,6 @@ xcmp 2<<'!'
   D: FD FE ## ]
 !
 
-printf .
 ascii |
 xhexii -c 42 |
 xcmp 2<<'!'
