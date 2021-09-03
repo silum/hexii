@@ -190,6 +190,38 @@ hexii_c(unsigned char c)
 		printf("%s.%c%s",
 		       aflag_(ANSI_CYN), c,
 		       aflag_(ANSI_RESET));
+	} else if (!hflag && '\a' == c) {
+		printf("%s\\a%s",
+		       aflag_(ANSI_MAG),
+		       aflag_(ANSI_RESET));
+	} else if (!hflag && '\b' == c) {
+		printf("%s\\b%s",
+		       aflag_(ANSI_MAG),
+		       aflag_(ANSI_RESET));
+	} else if (!hflag && '\033' == c) {
+		printf("%s\\e%s",
+		       aflag_(ANSI_MAG),
+		       aflag_(ANSI_RESET));
+	} else if (!hflag && '\f' == c) {
+		printf("%s\\f%s",
+		       aflag_(ANSI_MAG),
+		       aflag_(ANSI_RESET));
+	} else if (!hflag && '\n' == c) {
+		printf("%s\\n%s",
+		       aflag_(ANSI_MAG),
+		       aflag_(ANSI_RESET));
+	} else if (!hflag && '\r' == c) {
+		printf("%s\\r%s",
+		       aflag_(ANSI_MAG),
+		       aflag_(ANSI_RESET));
+	} else if (!hflag && '\t' == c) {
+		printf("%s\\t%s",
+		       aflag_(ANSI_MAG),
+		       aflag_(ANSI_RESET));
+	} else if (!hflag && '\v' == c) {
+		printf("%s\\v%s",
+		       aflag_(ANSI_MAG),
+		       aflag_(ANSI_RESET));
 	} else {
 		printf((xflag) ? "%02x" : "%02X", c);
 	}
