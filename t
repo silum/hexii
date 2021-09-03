@@ -2,16 +2,24 @@
 
 set -e
 
+tmpf=$(mktemp t.XXXXXX)
+fin() {
+    rm -f ${tmpf}
+}
+trap fin EXIT
+
 ascii() {
-    awk 'BEGIN { for (x = 0; x < 256; x++) printf "%c", x }'
+    awk 'BEGIN { for (x = 0; x < 256; x++) printf "%c", x }' > ${tmpf}
 }
 
 simple() {
-    printf "min: "
-    printf '\000'
-    printf "	&\n"
-    printf "max: "
-    printf '\377'
+    {
+        printf "min: "
+        printf '\000'
+        printf "	&\n"
+        printf "max: "
+        printf '\377'
+    } > ${tmpf}
 }
 
 xcmp() {
@@ -20,12 +28,12 @@ xcmp() {
 }
 
 xhexii() {
-    ./hexii "$@" - |
+    ./hexii "$@" ${tmpf} |
     sed "s^$(printf '\033')\\[[0-9;]*[a-zA-Z]^^g"
 }
 
 # more nulls than read buffer
-head -c 8196 /dev/zero |
+head -c 8196 /dev/zero > ${tmpf}
 xhexii |
 xcmp 2<<!
        0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -34,7 +42,7 @@ xcmp 2<<!
 !
 
 # all ASCII chars
-ascii |
+ascii
 xhexii |
 xcmp 2<<'!'
       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -59,16 +67,15 @@ xcmp 2<<'!'
 !
 
 # ansi
-simple |
-./hexii -a - |
+simple
+./hexii -a ${tmpf} |
 xcmp 2<<'!'
   [0;33m  0[0m[0;33m  1[0m[0;33m  2[0m[0;33m  3[0m[0;33m  4[0m[0;33m  5[0m[0;33m  6[0m[0;33m  7[0m[0;33m  8[0m[0;33m  9[0m[0;33m  A[0m[0;33m  B[0m[0;33m  C[0m[0;33m  D[0m[0;33m  E[0m[0;33m  F[0m
 
 [0;33m0:[0m [0;36m.m[0m [0;36m.i[0m [0;36m.n[0m [0;36m.:[0m 20    09 [0;36m.&[0m 0A [0;36m.m[0m [0;36m.a[0m [0;36m.x[0m [0;36m.:[0m 20 [0;31m##[0m [1;37m][0m
 !
 
-simple |
-./hexii -A - |
+./hexii -A ${tmpf} |
 xcmp 2<<'!'
     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
 
@@ -76,7 +83,7 @@ xcmp 2<<'!'
 !
 
 # columns
-ascii |
+ascii
 xhexii -c11 |
 xcmp 2<<'!'
       0  1  2  3  4  5  6  7  8  9  A
@@ -107,7 +114,6 @@ xcmp 2<<'!'
   D: FD FE ## ]
 !
 
-ascii |
 xhexii -c 42 |
 xcmp 2<<'!'
       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F 20 21 22 23 24 25 26 27 28 29
@@ -122,7 +128,7 @@ xcmp 2<<'!'
 !
 
 # space as hex
-simple |
+simple
 xhexii -h |
 xcmp 2<<'!'
     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -130,7 +136,6 @@ xcmp 2<<'!'
 0: .m .i .n .: 20    09 .& 0A .m .a .x .: 20 ## ]
 !
 
-simple |
 xhexii -H |
 xcmp 2<<'!'
     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -138,7 +143,6 @@ xcmp 2<<'!'
 0: .m .i .n .: .     09 .& 0A .m .a .x .: .  ## ]
 !
 
-simple |
 xhexii -hH |
 xcmp 2<<'!'
     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -146,7 +150,6 @@ xcmp 2<<'!'
 0: .m .i .n .: .     09 .& 0A .m .a .x .: .  ## ]
 !
 
-simple |
 xhexii -Hh |
 xcmp 2<<'!'
     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -154,7 +157,6 @@ xcmp 2<<'!'
 0: .m .i .n .: 20    09 .& 0A .m .a .x .: 20 ## ]
 !
 
-simple |
 xhexii -q |
 xcmp 2<<'!'
     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -162,7 +164,6 @@ xcmp 2<<'!'
 0: .m .i .n .: 20    09 .& 0A .m .a .x .: 20 ## ]
 !
 
-simple |
 xhexii -qv |
 xcmp 2<<'!'
     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -171,7 +172,7 @@ xcmp 2<<'!'
 !
 
 # suppress nulls
-head -c 100 /dev/zero |
+head -c 100 /dev/zero > ${tmpf}
 xhexii -s |
 xcmp 2<<'!'
      0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -179,7 +180,6 @@ xcmp 2<<'!'
 60:             ]
 !
 
-head -c 100 /dev/zero |
 xhexii -S |
 xcmp 2<<'!'
      0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -193,7 +193,6 @@ xcmp 2<<'!'
 60:             ]
 !
 
-head -c 100 /dev/zero |
 xhexii -sS |
 xcmp 2<<'!'
      0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -207,7 +206,6 @@ xcmp 2<<'!'
 60:             ]
 !
 
-head -c 100 /dev/zero |
 xhexii -Ss |
 xcmp 2<<'!'
      0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -215,7 +213,7 @@ xcmp 2<<'!'
 60:             ]
 !
 
-simple |
+simple
 xhexii -v |
 xcmp 2<<'!'
     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -223,7 +221,6 @@ xcmp 2<<'!'
 0: .m .i .n .: 20 00 09 .& 0A .m .a .x .: 20 FF ]
 !
 
-simple |
 xhexii -vq |
 xcmp 2<<'!'
     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -232,7 +229,7 @@ xcmp 2<<'!'
 !
 
 # hex case
-ascii |
+ascii
 xhexii -x |
 xcmp 2<<'!'
       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -256,7 +253,6 @@ xcmp 2<<'!'
 100: ]
 !
 
-ascii |
 xhexii -X |
 xcmp 2<<'!'
       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -280,7 +276,6 @@ xcmp 2<<'!'
 100: ]
 !
 
-ascii |
 xhexii -Xx |
 xcmp 2<<'!'
       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -304,7 +299,6 @@ xcmp 2<<'!'
 100: ]
 !
 
-ascii |
 xhexii -xX |
 xcmp 2<<'!'
       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
