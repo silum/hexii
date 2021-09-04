@@ -9,7 +9,7 @@ fin() {
 trap fin EXIT
 
 ascii() {
-    awk 'BEGIN { for (x = 0; x < 256; x++) printf "%c", x }' > ${tmpf}
+    LC_ALL=C awk 'BEGIN { for (x = 0; x < 256; x++) printf "%c", x }' > ${tmpf}
 }
 
 simple() {
