@@ -37,7 +37,7 @@ bool aflag = true;
 bool hflag = true;
 bool sflag = true;
 bool verbose;
-bool xflag;
+bool xflag = true;
 
 int
 main(int argc, char *argv[])
@@ -76,10 +76,10 @@ main(int argc, char *argv[])
 		version();
 		break;
 	case 'x':
-		xflag = true;
+		xflag = false;
 		break;
 	case 'X':
-		xflag = false;
+		xflag = true;
 		break;
 	default: usage();
 	} ARGEND
@@ -223,7 +223,7 @@ hexii_c(unsigned char c)
 		       aflag_(ANSI_MAG),
 		       aflag_(ANSI_RESET));
 	} else {
-		printf((xflag) ? "%02x" : "%02X", c);
+		printf((xflag) ? "%02X" : "%02x", c);
 	}
 }
 
