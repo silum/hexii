@@ -332,7 +332,7 @@ xcmp 2<<'!'
 # usage
 ./hexii 2>&1 |
 xcmp 2<<!
-usage: ./hexii [-aAhHqsSvxX] [-c num] FILE
+usage: ./hexii [-aAhHiIqsSvxX] [-c num] FILE
        ./hexii -V
 !
 

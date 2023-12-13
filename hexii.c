@@ -35,6 +35,7 @@ static void version(void);
 
 bool aflag = true;  // no-ANSI / ANSI (default)
 bool hflag = true;  // C escape-char / hex (default)
+bool iflag;  // ASCII (default) / hex
 bool sflag = true;  // don't squash blanks / squash blanks (default)
 bool verbose;
 bool xflag = true;  // 0xab / 0xAB (default)
@@ -59,6 +60,12 @@ main(int argc, char *argv[])
 		break;
 	case 'H':
 		hflag = false;
+		break;
+	case 'i':
+		iflag = false;
+		break;
+	case 'I':
+		iflag = true;
 		break;
 	case 'q':
 		verbose = false;
@@ -187,9 +194,11 @@ hexii_c(unsigned char c)
 		       aflag_(ANSI_RESET));
 	} else if ((isprint(c) && ' ' != c)
 		   || (' ' == c && !hflag)) {
-		printf("%s.%c%s",
-		       aflag_(ANSI_CYN), c,
-		       aflag_(ANSI_RESET));
+		printf((!iflag) ? "%s.%c%s"
+		                : (xflag) ? "%s%02X%s"
+		                          : "%s%02x%s",
+		        aflag_(ANSI_CYN), c,
+		        aflag_(ANSI_RESET));
 	} else if (!hflag && '\a' == c) {
 		printf("%s\\a%s",
 		       aflag_(ANSI_MAG),
@@ -291,7 +300,7 @@ static
 void
 usage(void)
 {
-	fprintf(stderr, "usage: %s [-aAhHqsSvxX] [-c num] FILE\n", argv0);
+	fprintf(stderr, "usage: %s [-aAhHiIqsSvxX] [-c num] FILE\n", argv0);
 	fprintf(stderr, "       %s -V\n", argv0);
 	exit(EXIT_FAILURE);
 }
