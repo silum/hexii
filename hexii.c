@@ -33,11 +33,11 @@ static int hexii(int, unsigned);
 static void usage(void);
 static void version(void);
 
-bool aflag = true;
-bool hflag = true;
-bool sflag = true;
+bool aflag = true;  // no-ANSI / ANSI (default)
+bool hflag = true;  // C escape-char / hex (default)
+bool sflag = true;  // don't squash blanks / squash blanks (default)
 bool verbose;
-bool xflag = true;
+bool xflag = true;  // 0xab / 0xAB (default)
 
 int
 main(int argc, char *argv[])
