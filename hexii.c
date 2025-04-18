@@ -95,12 +95,10 @@ main(int argc, char *argv[])
 		usage();
 	}
 
-	int fd = STDIN_FILENO;
-	const char *fn = NULL;
 	int rval = EXIT_SUCCESS;
 	for (; argc; argc--, argv++) {
-		fn = *argv;
-		fd = ('-' == fn[0] && '\0' == fn[1])
+		const char* fn = *argv;
+		int fd = ('-' == fn[0] && '\0' == fn[1])
 		     ? STDIN_FILENO
 		     : open(fn, O_RDONLY, 0);
 		if (fd < 0) {
