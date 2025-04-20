@@ -291,8 +291,9 @@ hexii(int fd, unsigned cols)
 
 	size_t buflen = 8192 - 8192 % cols;
 	char buf[buflen];
+	size_t wrlen = 0;
 	off_t off = 0;
-	for (int blk = 0;; blk++) {
+	for (;;) {
 		ssize_t len = read(fd, buf, buflen);
 		if (-1 == len) {
 			return 1;
@@ -302,11 +303,12 @@ hexii(int fd, unsigned cols)
 			return 0;
 		}
 
-		off_t base = buflen * blk;
+		off_t base = wrlen;
 		while (off - base < len) {
 			int nr = hexii_r(buf, len, base, off - base, addr_wid, cols);
 			off += nr;
 		}
+		wrlen += len;
 	}
 }
 
