@@ -299,7 +299,7 @@ hexii(int fd, unsigned cols)
 		}
 		if (0 == len) {
 			eof(addr_wid, off, cols);
-			break;
+			return 0;
 		}
 
 		off_t base = buflen * blk;
@@ -308,7 +308,6 @@ hexii(int fd, unsigned cols)
 			off += nr;
 		}
 	}
-	return 0;
 }
 
 static
