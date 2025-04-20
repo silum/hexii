@@ -126,7 +126,7 @@ main(int argc, char *argv[])
 static
 inline
 const char *
-aflag_(const char *s)
+aflag_fmt(const char *s)
 {
 	return (aflag) ? s : "";
 }
@@ -144,8 +144,8 @@ addr(int wid, int off, int cols)
 	int val = off % (int)pow(16, w);
 
 	printf((w == wid) ? "\n%s%0*X:%s" : "\n%s%*X:%s",
-	       aflag_(ANSI_YEL), wid, val,
-	       aflag_(ANSI_RESET));
+	       aflag_fmt(ANSI_YEL), wid, val,
+	       aflag_fmt(ANSI_RESET));
 
 	prev = off;
 }
@@ -158,8 +158,8 @@ eof(unsigned addr_wid, off_t off, unsigned cols)
 		addr(addr_wid, off, cols);
 	}
 	printf(" %s]%s\n",
-	       aflag_(ANSI_BWHT),
-	       aflag_(ANSI_RESET));
+	       aflag_fmt(ANSI_BWHT),
+	       aflag_fmt(ANSI_RESET));
 }
 
 static
@@ -190,8 +190,8 @@ head(int nspace, unsigned cols)
 	printf("%*s", nspace, " ");
 	for (unsigned i = 0; i < cols; i++) {
 		printf("%s%3X%s",
-		       aflag_(ANSI_YEL), i,
-		       aflag_(ANSI_RESET));
+		       aflag_fmt(ANSI_YEL), i,
+		       aflag_fmt(ANSI_RESET));
 	}
 	puts("");
 }
@@ -203,54 +203,54 @@ hexii_c(unsigned char c)
 	if (0x00 == c) {
 		if (verbose) {
 			printf("%s00%s",
-			       aflag_(ANSI_BBLK),
-			       aflag_(ANSI_RESET));
+			       aflag_fmt(ANSI_BBLK),
+			       aflag_fmt(ANSI_RESET));
 		} else {
 			printf("  ");
 		}
 	} else if (0xff == c) {
 		printf("%s%s%s",
-		       aflag_(ANSI_RED), ((verbose) ? "FF" : "##"),
-		       aflag_(ANSI_RESET));
+		       aflag_fmt(ANSI_RED), ((verbose) ? "FF" : "##"),
+		       aflag_fmt(ANSI_RESET));
 	} else if ((isprint(c) && ' ' != c)
 		   || (' ' == c && !hflag)) {
 		printf((!iflag) ? "%s.%c%s"
 		                : (xflag) ? "%s%02X%s"
 		                          : "%s%02x%s",
-		        aflag_(ANSI_CYN), c,
-		        aflag_(ANSI_RESET));
+		        aflag_fmt(ANSI_CYN), c,
+		        aflag_fmt(ANSI_RESET));
 	} else if (!hflag && '\a' == c) {
 		printf("%s\\a%s",
-		       aflag_(ANSI_MAG),
-		       aflag_(ANSI_RESET));
+		       aflag_fmt(ANSI_MAG),
+		       aflag_fmt(ANSI_RESET));
 	} else if (!hflag && '\b' == c) {
 		printf("%s\\b%s",
-		       aflag_(ANSI_MAG),
-		       aflag_(ANSI_RESET));
+		       aflag_fmt(ANSI_MAG),
+		       aflag_fmt(ANSI_RESET));
 	} else if (!hflag && '\033' == c) {
 		printf("%s\\e%s",
-		       aflag_(ANSI_MAG),
-		       aflag_(ANSI_RESET));
+		       aflag_fmt(ANSI_MAG),
+		       aflag_fmt(ANSI_RESET));
 	} else if (!hflag && '\f' == c) {
 		printf("%s\\f%s",
-		       aflag_(ANSI_MAG),
-		       aflag_(ANSI_RESET));
+		       aflag_fmt(ANSI_MAG),
+		       aflag_fmt(ANSI_RESET));
 	} else if (!hflag && '\n' == c) {
 		printf("%s\\n%s",
-		       aflag_(ANSI_MAG),
-		       aflag_(ANSI_RESET));
+		       aflag_fmt(ANSI_MAG),
+		       aflag_fmt(ANSI_RESET));
 	} else if (!hflag && '\r' == c) {
 		printf("%s\\r%s",
-		       aflag_(ANSI_MAG),
-		       aflag_(ANSI_RESET));
+		       aflag_fmt(ANSI_MAG),
+		       aflag_fmt(ANSI_RESET));
 	} else if (!hflag && '\t' == c) {
 		printf("%s\\t%s",
-		       aflag_(ANSI_MAG),
-		       aflag_(ANSI_RESET));
+		       aflag_fmt(ANSI_MAG),
+		       aflag_fmt(ANSI_RESET));
 	} else if (!hflag && '\v' == c) {
 		printf("%s\\v%s",
-		       aflag_(ANSI_MAG),
-		       aflag_(ANSI_RESET));
+		       aflag_fmt(ANSI_MAG),
+		       aflag_fmt(ANSI_RESET));
 	} else {
 		printf((xflag) ? "%02X" : "%02x", c);
 	}
