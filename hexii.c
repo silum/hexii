@@ -325,6 +325,6 @@ static
 void
 version(void)
 {
-	printf("%s version 0.1+\n", argv0);
+	printf("%s version 0.2\n", argv0);
 	exit(EXIT_SUCCESS);
 }
