@@ -159,6 +159,13 @@ fsize(int fd)
 	if (-1 == ret) {
 		return ret;
 	}
+	/* WTF?! -- there appears to be a race condition on macOS, which causes the
+	stat struct to only be partially populated on the first call -- most
+	notably, the `st_size` field has a value of 0! */
+	ret = fstat(fd, &stat);
+	if (-1 == ret) {
+		return ret;
+	}
 
 	off_t size = stat.st_size;
 	return size;
