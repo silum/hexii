@@ -151,6 +151,18 @@ addr(int wid, int off, int cols)
 }
 
 static
+void
+eof(unsigned addr_wid, off_t off, unsigned cols)
+{
+	if (0 == (off % cols)) {
+		addr(addr_wid, off, cols);
+	}
+	printf(" %s]%s\n",
+	       aflag_(ANSI_BWHT),
+	       aflag_(ANSI_RESET));
+}
+
+static
 off_t
 fsize(int fd)
 {
@@ -286,12 +298,7 @@ hexii(int fd, unsigned cols)
 			return 1;
 		}
 		if (0 == len) {
-			if (0 == (off % cols)) {
-				addr(addr_wid, off, cols);
-			}
-			printf(" %s]%s\n",
-			       aflag_(ANSI_BWHT),
-			       aflag_(ANSI_RESET));
+			eof(addr_wid, off, cols);
 			break;
 		}
 
