@@ -18,3 +18,6 @@ Output:
 - offsets after a skip are fully written
 - Last_Offset+1 is marked with "]"
   (because EOF could be absent)
+
+Attribution:
+- Original Python implementation `hexii.py` by Ange Albertini <https://github.com/gunmetalbackupgooglecode/corkami/blob/master/src/HexII>
