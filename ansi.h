@@ -41,7 +41,7 @@
 #define  ANSI_CYNB "\033[46m"
 #define  ANSI_WHTB "\033[47m"
 
-/* High intensty background  */
+/* High intensity background  */
 #define  ANSI_BLKHB "\033[0;100m"
 #define  ANSI_REDHB "\033[0;101m"
 #define  ANSI_GRNHB "\033[0;102m"
@@ -51,7 +51,7 @@
 #define  ANSI_CYNHB "\033[0;106m"
 #define  ANSI_WHTHB "\033[0;107m"
 
-/* High intensty text */
+/* High intensity text */
 #define  ANSI_HBLK "\033[0;90m"
 #define  ANSI_HRED "\033[0;91m"
 #define  ANSI_HGRN "\033[0;92m"
