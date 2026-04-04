@@ -17,7 +17,6 @@
 #include <ctype.h>
 #include <err.h>
 #include <fcntl.h>
-#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -140,11 +139,18 @@ addr(int wid, int off, int cols)
 {
 	static int prev = 0;
 	int xor = off ^ prev;
-	int w = (0 == xor
-	         || cols != (off - prev))
-	        ? wid
-	        : (log(xor) / log(16) + 1);
-	int val = off % (int)pow(16, w);
+
+	int w = wid;
+	if (xor != 0 && cols == (off - prev)) {
+		/* Calculate hex digits needed for xor */
+		w = 1;
+		for (unsigned x = xor; x > 15; x >>= 4) {
+			w++;
+		}
+	}
+
+	int modulo = 1 << (4 * w);  /* 16^w using bit shift */
+	int val = off % modulo;
 
 	printf((w == wid) ? "\n%s%0*X:%s" : "\n%s%*X:%s",
 	       ansi_fmt(ANSI_YEL), wid, val,
@@ -297,7 +303,14 @@ int
 hexii(int fd, unsigned cols)
 {
 	off_t sz = fsize(fd);
-	int addr_wid = (sz <= 0) ? 16 : (log(sz) / log(16)) + 1;
+	int addr_wid = 1;
+	if (sz > 0) {
+		for (off_t temp = sz; temp > 15; temp >>= 4) {
+			addr_wid++;
+		}
+	} else {
+		addr_wid = 16;
+	}
 	head(addr_wid + 1, cols);
 
 	size_t buflen = 8192 - 8192 % cols;

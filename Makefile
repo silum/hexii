@@ -4,7 +4,6 @@ hexii: hexii.o
 
 CFLAGS += -std=c99 -Wall -Wextra -Wpedantic
 CPPFLAGS += -I. -Ilib/arg
-LDLIBS = -lm
 
 .PHONY: all
 all: $(BIN)
