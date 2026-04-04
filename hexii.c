@@ -40,6 +40,7 @@ static struct {
 	bool lowercase; /* lowercase hex (default: false) */
 	bool squash;    /* squash blank lines (default: true) */
 	bool verbose;   /* verbose output (default: false) */
+	unsigned cols;  /* column count (default: 16) */
 } opt = {
 	.ansi = true,
 	.escape = false,
@@ -47,12 +48,12 @@ static struct {
 	.lowercase = false,
 	.squash = true,
 	.verbose = false,
+	.cols = 16,
 };
 
 int
 main(int argc, char *argv[])
 {
-	unsigned cols = 16;
 	ARGBEGIN {
 	case 'a':
 		opt.ansi = true;
@@ -61,8 +62,8 @@ main(int argc, char *argv[])
 		opt.ansi = false;
 		break;
 	case 'c':
-		cols = atoi(EARGF(usage()));
-		cols = (cols <= 0) ? 1 : cols;
+		opt.cols = atoi(EARGF(usage()));
+		opt.cols = (opt.cols <= 0) ? 1 : opt.cols;
 		break;
 	case 'e':
 		opt.escape = true;
@@ -116,7 +117,7 @@ main(int argc, char *argv[])
 			rval = EXIT_FAILURE;
 			continue;
 		}
-		if (hexii(fd, cols)) {
+		if (hexii(fd, opt.cols)) {
 			warn("%s", fn ? fn : "stdin");
 			rval = EXIT_FAILURE;
 		}
