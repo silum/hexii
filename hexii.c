@@ -37,16 +37,16 @@ static struct {
 	bool ansi;      /* ANSI output enabled (default: true) */
 	bool escape;    /* C escape-char output (default: false) */
 	bool hex;       /* hex display mode (default: false) */
+	bool lowercase; /* lowercase hex (default: false) */
 	bool squash;    /* squash blank lines (default: true) */
 	bool verbose;   /* verbose output (default: false) */
-	bool upcase;    /* uppercase hex (default: true) */
 } opt = {
 	.ansi = true,
 	.escape = false,
 	.hex = false,
+	.lowercase = false,
 	.squash = true,
 	.verbose = false,
-	.upcase = true,
 };
 
 int
@@ -92,10 +92,10 @@ main(int argc, char *argv[])
 		version();
 		break;
 	case 'x':
-		opt.upcase = false;
+		opt.lowercase = true;
 		break;
 	case 'X':
-		opt.upcase = true;
+		opt.lowercase = false;
 		break;
 	default: usage();
 	} ARGEND
@@ -224,10 +224,10 @@ hexii_c(unsigned char c)
 	} else if ((isprint(c) && ' ' != c)
 		   || (' ' == c && opt.escape)) {
 		printf((!opt.hex) ? "%s.%c%s"
-		                : (opt.upcase) ? "%s%02X%s"
-		                               : "%s%02x%s",
-		        ansi_fmt(ANSI_CYN), c,
-		        ansi_fmt(ANSI_RESET));
+		                  : (opt.lowercase) ? "%s%02x%s"
+		                                    : "%s%02X%s",
+		       ansi_fmt(ANSI_CYN), c,
+		       ansi_fmt(ANSI_RESET));
 	} else if (opt.escape && '\a' == c) {
 		printf("%s\\a%s",
 		       ansi_fmt(ANSI_MAG),
@@ -261,7 +261,8 @@ hexii_c(unsigned char c)
 		       ansi_fmt(ANSI_MAG),
 		       ansi_fmt(ANSI_RESET));
 	} else {
-		printf((opt.upcase) ? "%02X" : "%02x", c);
+		printf((opt.lowercase) ? "%02x"
+		                       : "%02X", c);
 	}
 }
 
