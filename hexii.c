@@ -135,7 +135,7 @@ main(int argc, char *argv[])
 static
 inline
 const char *
-aflag_fmt(const char *s)
+ansi_fmt(const char *s)
 {
 	return (opt.ansi) ? s : "";
 }
@@ -153,8 +153,8 @@ addr(int wid, int off, int cols)
 	int val = off % (int)pow(16, w);
 
 	printf((w == wid) ? "\n%s%0*X:%s" : "\n%s%*X:%s",
-	       aflag_fmt(ANSI_YEL), wid, val,
-	       aflag_fmt(ANSI_RESET));
+	       ansi_fmt(ANSI_YEL), wid, val,
+	       ansi_fmt(ANSI_RESET));
 
 	prev = off;
 }
@@ -167,8 +167,8 @@ eof(unsigned addr_wid, off_t off, unsigned cols)
 		addr(addr_wid, off, cols);
 	}
 	printf(" %s]%s\n",
-	       aflag_fmt(ANSI_BWHT),
-	       aflag_fmt(ANSI_RESET));
+	       ansi_fmt(ANSI_BWHT),
+	       ansi_fmt(ANSI_RESET));
 }
 
 static
@@ -199,8 +199,8 @@ head(int nspace, unsigned cols)
 	printf("%*s", nspace, " ");
 	for (unsigned i = 0; i < cols; i++) {
 		printf("%s%3X%s",
-		       aflag_fmt(ANSI_YEL), i,
-		       aflag_fmt(ANSI_RESET));
+		       ansi_fmt(ANSI_YEL), i,
+		       ansi_fmt(ANSI_RESET));
 	}
 	puts("");
 }
@@ -212,54 +212,54 @@ hexii_c(unsigned char c)
 	if (0x00 == c) {
 		if (opt.verbose) {
 			printf("%s00%s",
-			       aflag_fmt(ANSI_BBLK),
-			       aflag_fmt(ANSI_RESET));
+			       ansi_fmt(ANSI_BBLK),
+			       ansi_fmt(ANSI_RESET));
 		} else {
 			printf("  ");
 		}
 	} else if (0xff == c) {
 		printf("%s%s%s",
-		       aflag_fmt(ANSI_RED), ((opt.verbose) ? "FF" : "##"),
-		       aflag_fmt(ANSI_RESET));
+		       ansi_fmt(ANSI_RED), ((opt.verbose) ? "FF" : "##"),
+		       ansi_fmt(ANSI_RESET));
 	} else if ((isprint(c) && ' ' != c)
 		   || (' ' == c && opt.escape)) {
 		printf((!opt.hex) ? "%s.%c%s"
 		                : (opt.upcase) ? "%s%02X%s"
 		                               : "%s%02x%s",
-		        aflag_fmt(ANSI_CYN), c,
-		        aflag_fmt(ANSI_RESET));
+		        ansi_fmt(ANSI_CYN), c,
+		        ansi_fmt(ANSI_RESET));
 	} else if (opt.escape && '\a' == c) {
 		printf("%s\\a%s",
-		       aflag_fmt(ANSI_MAG),
-		       aflag_fmt(ANSI_RESET));
+		       ansi_fmt(ANSI_MAG),
+		       ansi_fmt(ANSI_RESET));
 	} else if (opt.escape && '\b' == c) {
 		printf("%s\\b%s",
-		       aflag_fmt(ANSI_MAG),
-		       aflag_fmt(ANSI_RESET));
+		       ansi_fmt(ANSI_MAG),
+		       ansi_fmt(ANSI_RESET));
 	} else if (opt.escape && '\033' == c) {
 		printf("%s\\e%s",
-		       aflag_fmt(ANSI_MAG),
-		       aflag_fmt(ANSI_RESET));
+		       ansi_fmt(ANSI_MAG),
+		       ansi_fmt(ANSI_RESET));
 	} else if (opt.escape && '\f' == c) {
 		printf("%s\\f%s",
-		       aflag_fmt(ANSI_MAG),
-		       aflag_fmt(ANSI_RESET));
+		       ansi_fmt(ANSI_MAG),
+		       ansi_fmt(ANSI_RESET));
 	} else if (opt.escape && '\n' == c) {
 		printf("%s\\n%s",
-		       aflag_fmt(ANSI_MAG),
-		       aflag_fmt(ANSI_RESET));
+		       ansi_fmt(ANSI_MAG),
+		       ansi_fmt(ANSI_RESET));
 	} else if (opt.escape && '\r' == c) {
 		printf("%s\\r%s",
-		       aflag_fmt(ANSI_MAG),
-		       aflag_fmt(ANSI_RESET));
+		       ansi_fmt(ANSI_MAG),
+		       ansi_fmt(ANSI_RESET));
 	} else if (opt.escape && '\t' == c) {
 		printf("%s\\t%s",
-		       aflag_fmt(ANSI_MAG),
-		       aflag_fmt(ANSI_RESET));
+		       ansi_fmt(ANSI_MAG),
+		       ansi_fmt(ANSI_RESET));
 	} else if (opt.escape && '\v' == c) {
 		printf("%s\\v%s",
-		       aflag_fmt(ANSI_MAG),
-		       aflag_fmt(ANSI_RESET));
+		       ansi_fmt(ANSI_MAG),
+		       ansi_fmt(ANSI_RESET));
 	} else {
 		printf((opt.upcase) ? "%02X" : "%02x", c);
 	}
