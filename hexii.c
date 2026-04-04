@@ -29,6 +29,7 @@
 
 char *argv0;
 
+static const char * ansi_fmt(const char *s);
 static int hexii(int, unsigned);
 static void usage(void);
 static void version(void);
@@ -134,14 +135,6 @@ main(int argc, char *argv[])
 }
 
 static
-inline
-const char *
-ansi_fmt(const char *s)
-{
-	return (opt.ansi) ? s : "";
-}
-
-static
 void
 addr(int wid, int off, int cols)
 {
@@ -158,6 +151,13 @@ addr(int wid, int off, int cols)
 	       ansi_fmt(ANSI_RESET));
 
 	prev = off;
+}
+
+static
+const char *
+ansi_fmt(const char *s)
+{
+	return (opt.ansi) ? s : "";
 }
 
 static
