@@ -23,8 +23,7 @@ simple() {
 }
 
 xcmp() {
-    printf .
-    cmp -s /dev/stdin /dev/stderr
+    cmp -s /dev/stdin /dev/stderr && printf . || { echo F; false; }
 }
 
 xhexii() {
