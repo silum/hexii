@@ -33,12 +33,21 @@ static int hexii(int, unsigned);
 static void usage(void);
 static void version(void);
 
-bool aflag = true;  // no-ANSI / ANSI (default)
-bool eflag = false;  // C escape-char / hex (default)
-bool hflag;  // ASCII (default) / hex
-bool sflag = true;  // don't squash blanks / squash blanks (default)
-bool verbose;
-bool xflag = true;  // 0xab / 0xAB (default)
+static struct {
+	bool ansi;      /* ANSI output enabled (default: true) */
+	bool escape;    /* C escape-char output (default: false) */
+	bool hex;       /* hex display mode (default: false) */
+	bool squash;    /* squash blank lines (default: true) */
+	bool verbose;   /* verbose output (default: false) */
+	bool upcase;    /* uppercase hex (default: true) */
+} opt = {
+	.ansi = true,
+	.escape = false,
+	.hex = false,
+	.squash = true,
+	.verbose = false,
+	.upcase = true,
+};
 
 int
 main(int argc, char *argv[])
@@ -46,47 +55,47 @@ main(int argc, char *argv[])
 	unsigned cols = 16;
 	ARGBEGIN {
 	case 'a':
-		aflag = true;
+		opt.ansi = true;
 		break;
 	case 'A':
-		aflag = false;
+		opt.ansi = false;
 		break;
 	case 'c':
 		cols = atoi(EARGF(usage()));
 		cols = (cols <= 0) ? 1 : cols;
 		break;
 	case 'e':
-		eflag = true;
+		opt.escape = true;
 		break;
 	case 'E':
-		eflag = false;
+		opt.escape = false;
 		break;
 	case 'h':
-		hflag = true;
+		opt.hex = true;
 		break;
 	case 'H':
-		hflag = false;
+		opt.hex = false;
 		break;
 	case 'q':
-		verbose = false;
+		opt.verbose = false;
 		break;
 	case 's':
-		sflag = true;
+		opt.squash = true;
 		break;
 	case 'S':
-		sflag = false;
+		opt.squash = false;
 		break;
 	case 'v':
-		verbose = true;
+		opt.verbose = true;
 		break;
 	case 'V':
 		version();
 		break;
 	case 'x':
-		xflag = false;
+		opt.upcase = false;
 		break;
 	case 'X':
-		xflag = true;
+		opt.upcase = true;
 		break;
 	default: usage();
 	} ARGEND
@@ -128,7 +137,7 @@ inline
 const char *
 aflag_fmt(const char *s)
 {
-	return (aflag) ? s : "";
+	return (opt.ansi) ? s : "";
 }
 
 static
@@ -201,7 +210,7 @@ void
 hexii_c(unsigned char c)
 {
 	if (0x00 == c) {
-		if (verbose) {
+		if (opt.verbose) {
 			printf("%s00%s",
 			       aflag_fmt(ANSI_BBLK),
 			       aflag_fmt(ANSI_RESET));
@@ -210,49 +219,49 @@ hexii_c(unsigned char c)
 		}
 	} else if (0xff == c) {
 		printf("%s%s%s",
-		       aflag_fmt(ANSI_RED), ((verbose) ? "FF" : "##"),
+		       aflag_fmt(ANSI_RED), ((opt.verbose) ? "FF" : "##"),
 		       aflag_fmt(ANSI_RESET));
 	} else if ((isprint(c) && ' ' != c)
-		   || (' ' == c && eflag)) {
-		printf((!hflag) ? "%s.%c%s"
-		                : (xflag) ? "%s%02X%s"
-		                          : "%s%02x%s",
+		   || (' ' == c && opt.escape)) {
+		printf((!opt.hex) ? "%s.%c%s"
+		                : (opt.upcase) ? "%s%02X%s"
+		                               : "%s%02x%s",
 		        aflag_fmt(ANSI_CYN), c,
 		        aflag_fmt(ANSI_RESET));
-	} else if (eflag && '\a' == c) {
+	} else if (opt.escape && '\a' == c) {
 		printf("%s\\a%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (eflag && '\b' == c) {
+	} else if (opt.escape && '\b' == c) {
 		printf("%s\\b%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (eflag && '\033' == c) {
+	} else if (opt.escape && '\033' == c) {
 		printf("%s\\e%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (eflag && '\f' == c) {
+	} else if (opt.escape && '\f' == c) {
 		printf("%s\\f%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (eflag && '\n' == c) {
+	} else if (opt.escape && '\n' == c) {
 		printf("%s\\n%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (eflag && '\r' == c) {
+	} else if (opt.escape && '\r' == c) {
 		printf("%s\\r%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (eflag && '\t' == c) {
+	} else if (opt.escape && '\t' == c) {
 		printf("%s\\t%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (eflag && '\v' == c) {
+	} else if (opt.escape && '\v' == c) {
 		printf("%s\\v%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
 	} else {
-		printf((xflag) ? "%02X" : "%02x", c);
+		printf((opt.upcase) ? "%02X" : "%02x", c);
 	}
 }
 
@@ -265,7 +274,7 @@ hexii_r(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsign
 	for (unsigned c = 0; c < ncols && zeros; c++) {
 		zeros = ('\0' == buf[off + c]);
 	}
-	if (zeros && ncols == cols && sflag) {
+	if (zeros && ncols == cols && opt.squash) {
 		return cols;
 	}
 
