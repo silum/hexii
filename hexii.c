@@ -235,38 +235,17 @@ hexii_c(unsigned char c)
 		                                    : "%s%02X%s",
 		       ansi_fmt(ANSI_CYN), c,
 		       ansi_fmt(ANSI_RESET));
-	} else if (opt.escape && '\a' == c) {
-		printf("%s\\a%s",
-		       ansi_fmt(ANSI_MAG),
-		       ansi_fmt(ANSI_RESET));
-	} else if (opt.escape && '\b' == c) {
-		printf("%s\\b%s",
-		       ansi_fmt(ANSI_MAG),
-		       ansi_fmt(ANSI_RESET));
-	} else if (opt.escape && '\033' == c) {
-		printf("%s\\e%s",
-		       ansi_fmt(ANSI_MAG),
-		       ansi_fmt(ANSI_RESET));
-	} else if (opt.escape && '\f' == c) {
-		printf("%s\\f%s",
-		       ansi_fmt(ANSI_MAG),
-		       ansi_fmt(ANSI_RESET));
-	} else if (opt.escape && '\n' == c) {
-		printf("%s\\n%s",
-		       ansi_fmt(ANSI_MAG),
-		       ansi_fmt(ANSI_RESET));
-	} else if (opt.escape && '\r' == c) {
-		printf("%s\\r%s",
-		       ansi_fmt(ANSI_MAG),
-		       ansi_fmt(ANSI_RESET));
-	} else if (opt.escape && '\t' == c) {
-		printf("%s\\t%s",
-		       ansi_fmt(ANSI_MAG),
-		       ansi_fmt(ANSI_RESET));
-	} else if (opt.escape && '\v' == c) {
-		printf("%s\\v%s",
-		       ansi_fmt(ANSI_MAG),
-		       ansi_fmt(ANSI_RESET));
+	} else if (opt.escape) {
+		switch (c) {
+		case '\a': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\a", ansi_fmt(ANSI_RESET)); break;
+		case '\b': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\b", ansi_fmt(ANSI_RESET)); break;
+		case '\033': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\e", ansi_fmt(ANSI_RESET)); break;
+		case '\f': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\f", ansi_fmt(ANSI_RESET)); break;
+		case '\n': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\n", ansi_fmt(ANSI_RESET)); break;
+		case '\r': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\r", ansi_fmt(ANSI_RESET)); break;
+		case '\t': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\t", ansi_fmt(ANSI_RESET)); break;
+		case '\v': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\v", ansi_fmt(ANSI_RESET)); break;
+		}
 	} else {
 		printf((opt.lowercase) ? "%02x"
 		                       : "%02X", c);
