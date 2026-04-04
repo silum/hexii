@@ -34,7 +34,7 @@ static void usage(void);
 static void version(void);
 
 bool aflag = true;  // no-ANSI / ANSI (default)
-bool hflag = true;  // C escape-char / hex (default)
+bool eflag = false;  // C escape-char / hex (default)
 bool iflag;  // ASCII (default) / hex
 bool sflag = true;  // don't squash blanks / squash blanks (default)
 bool verbose;
@@ -55,11 +55,11 @@ main(int argc, char *argv[])
 		cols = atoi(EARGF(usage()));
 		cols = (cols <= 0) ? 1 : cols;
 		break;
-	case 'h':
-		hflag = true;
+	case 'e':
+		eflag = true;
 		break;
-	case 'H':
-		hflag = false;
+	case 'E':
+		eflag = false;
 		break;
 	case 'i':
 		iflag = false;
@@ -213,41 +213,41 @@ hexii_c(unsigned char c)
 		       aflag_fmt(ANSI_RED), ((verbose) ? "FF" : "##"),
 		       aflag_fmt(ANSI_RESET));
 	} else if ((isprint(c) && ' ' != c)
-		   || (' ' == c && !hflag)) {
+		   || (' ' == c && eflag)) {
 		printf((!iflag) ? "%s.%c%s"
 		                : (xflag) ? "%s%02X%s"
 		                          : "%s%02x%s",
 		        aflag_fmt(ANSI_CYN), c,
 		        aflag_fmt(ANSI_RESET));
-	} else if (!hflag && '\a' == c) {
+	} else if (eflag && '\a' == c) {
 		printf("%s\\a%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (!hflag && '\b' == c) {
+	} else if (eflag && '\b' == c) {
 		printf("%s\\b%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (!hflag && '\033' == c) {
+	} else if (eflag && '\033' == c) {
 		printf("%s\\e%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (!hflag && '\f' == c) {
+	} else if (eflag && '\f' == c) {
 		printf("%s\\f%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (!hflag && '\n' == c) {
+	} else if (eflag && '\n' == c) {
 		printf("%s\\n%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (!hflag && '\r' == c) {
+	} else if (eflag && '\r' == c) {
 		printf("%s\\r%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (!hflag && '\t' == c) {
+	} else if (eflag && '\t' == c) {
 		printf("%s\\t%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
-	} else if (!hflag && '\v' == c) {
+	} else if (eflag && '\v' == c) {
 		printf("%s\\v%s",
 		       aflag_fmt(ANSI_MAG),
 		       aflag_fmt(ANSI_RESET));
@@ -316,7 +316,7 @@ static
 void
 usage(void)
 {
-	fprintf(stderr, "usage: %s [-aAhHiIqsSvxX] [-c num] FILE\n", argv0);
+	fprintf(stderr, "usage: %s [-aAeEiIqsSvxX] [-c num] FILE\n", argv0);
 	fprintf(stderr, "       %s -V\n", argv0);
 	exit(EXIT_FAILURE);
 }
