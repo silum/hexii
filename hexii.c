@@ -33,6 +33,10 @@
 		printf("%s", ansi_fmt(ANSI_RESET)); \
 	} while(0)
 
+#ifndef HEXII_MAX_COLS
+#define HEXII_MAX_COLS 0x1000
+#endif
+
 char *argv0;
 
 static void addr(int wid, int off, int cols);
@@ -78,7 +82,10 @@ main(int argc, char *argv[])
 		break;
 	case 'c':
 		opt.cols = atoi(EARGF(usage()));
-		opt.cols = (opt.cols <= 0) ? 1 : opt.cols;
+		opt.cols = (opt.cols <= 0) ? 1
+		                           : opt.cols;
+		opt.cols = (HEXII_MAX_COLS <= opt.cols) ? HEXII_MAX_COLS
+		                                        : opt.cols;
 		break;
 	case 'e':
 		opt.escape = true;
