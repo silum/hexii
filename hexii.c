@@ -127,10 +127,6 @@ main(int argc, char *argv[])
 		}
 	}
 
-	if (++argv, 0 < --argc) {
-		errx(EXIT_FAILURE, "unexpected argument: %s", *argv);
-	}
-
 	exit(rval);
 }
 
