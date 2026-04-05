@@ -38,6 +38,7 @@ char *argv0;
 static const char * ansi_fmt(const char *s);
 static int hexii(int, unsigned);
 static int hexwid(unsigned long x);
+static void putescchar(const char c);
 static void usage(void);
 static void version(void);
 
@@ -233,14 +234,14 @@ hexii_c(unsigned char c)
 		        c);
 	} else if (opt.escape) {
 		switch (c) {
-		case '\a': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\a", ansi_fmt(ANSI_RESET)); break;
-		case '\b': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\b", ansi_fmt(ANSI_RESET)); break;
-		case '\033': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\e", ansi_fmt(ANSI_RESET)); break;
-		case '\f': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\f", ansi_fmt(ANSI_RESET)); break;
-		case '\n': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\n", ansi_fmt(ANSI_RESET)); break;
-		case '\r': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\r", ansi_fmt(ANSI_RESET)); break;
-		case '\t': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\t", ansi_fmt(ANSI_RESET)); break;
-		case '\v': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\v", ansi_fmt(ANSI_RESET)); break;
+		case '\a': putescchar('a'); break;
+		case '\b': putescchar('b'); break;
+		case '\033': putescchar('e'); break;
+		case '\f': putescchar('f'); break;
+		case '\n': putescchar('n'); break;
+		case '\r': putescchar('r'); break;
+		case '\t': putescchar('t'); break;
+		case '\v': putescchar('v'); break;
 		}
 	} else {
 		printf((opt.lowercase) ? "%02x"
@@ -312,6 +313,13 @@ hexwid(unsigned long x)
 		w++;
 	}
 	return w;
+}
+
+static
+void
+putescchar(const char c)
+{
+	CPRINTF(ANSI_MAG, "\\%c", c);
 }
 
 static
