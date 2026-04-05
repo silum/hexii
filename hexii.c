@@ -119,7 +119,7 @@ main(int argc, char *argv[])
 			continue;
 		}
 		if (hexii(fd, opt.cols)) {
-			warn("%s", fn ? fn : "stdin");
+			warn("%s", (fd == STDIN_FILENO) ? "stdin" : fn);
 			rval = EXIT_FAILURE;
 		}
 		if (! is_stdin) {
