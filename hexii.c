@@ -30,6 +30,7 @@ char *argv0;
 
 static const char * ansi_fmt(const char *s);
 static int hexii(int, unsigned);
+static int hexwid(unsigned long x);
 static void usage(void);
 static void version(void);
 
@@ -142,11 +143,7 @@ addr(int wid, int off, int cols)
 
 	int w = wid;
 	if (xor != 0 && cols == (off - prev)) {
-		/* Calculate hex digits needed for xor */
-		w = 1;
-		for (unsigned x = xor; x > 15; x >>= 4) {
-			w++;
-		}
+		w = hexwid(xor);
 	}
 
 	int modulo = 1 << (4 * w);  /* 16^w using bit shift */
@@ -282,14 +279,7 @@ int
 hexii(int fd, unsigned cols)
 {
 	off_t sz = fsize(fd);
-	int addr_wid = 1;
-	if (sz > 0) {
-		for (off_t temp = sz; temp > 15; temp >>= 4) {
-			addr_wid++;
-		}
-	} else {
-		addr_wid = 16;
-	}
+	int addr_wid = (sz > 0) ? hexwid(sz) : 16;
 	head(addr_wid + 1, cols);
 
 	size_t buflen = 8192 - 8192 % cols;
@@ -313,6 +303,17 @@ hexii(int fd, unsigned cols)
 		}
 		wrlen += len;
 	}
+}
+
+static
+int
+hexwid(unsigned long x)
+{
+	int w = 1;
+	for (; x > 15; x >>= 4) {  /* bit-shift division by 16 (or 1 hex digit) */
+		w++;
+	}
+	return w;
 }
 
 static
