@@ -250,7 +250,7 @@ int
 hexii_r(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsigned cols)
 {
 	bool zeros = true;
-	unsigned ncols = (len < off + cols) ? len : cols;
+	unsigned ncols = (len < off + cols) ? (len - off) : cols;
 	for (unsigned c = 0; c < ncols && zeros; c++) {
 		zeros = ('\0' == buf[off + c]);
 	}
