@@ -278,12 +278,11 @@ hexii(int fd, unsigned cols)
 	int addr_wid = (sz > 0) ? hexwid(sz) : 16;
 	head(addr_wid + 1, cols);
 
-	size_t buflen = 8192 - 8192 % cols;
-	char buf[buflen];
+	char buf[cols];
 	size_t wrlen = 0;
 	off_t off = 0;
 	for (;;) {
-		ssize_t len = read(fd, buf, buflen);
+		ssize_t len = read(fd, buf, cols);
 		if (-1 == len) {
 			return 1;
 		}
