@@ -26,6 +26,13 @@
 #include "ansi.h"
 #include "arg.h"
 
+#define CPRINTF(color, ...) \
+	do { \
+		printf("%s", ansi_fmt(color)); \
+		printf(__VA_ARGS__); \
+		printf("%s", ansi_fmt(ANSI_RESET)); \
+	} while(0)
+
 char *argv0;
 
 static const char * ansi_fmt(const char *s);
@@ -145,9 +152,11 @@ addr(int wid, int off, int cols)
 	int modulo = 1 << (4 * w);  /* 16^w using bit shift */
 	int val = off % modulo;
 
-	printf((w == wid) ? "\n%s%0*X:%s" : "\n%s%*X:%s",
-	       ansi_fmt(ANSI_YEL), wid, val,
-	       ansi_fmt(ANSI_RESET));
+	puts("");
+	CPRINTF(ANSI_YEL,
+	        (w == wid) ? "%0*X:"
+	                   : "%*X:",
+	        wid, val);
 
 	prev = off;
 }
@@ -166,9 +175,9 @@ eof(unsigned addr_wid, off_t off, unsigned cols)
 	if (0 == (off % cols)) {
 		addr(addr_wid, off, cols);
 	}
-	printf(" %s]%s\n",
-	       ansi_fmt(ANSI_BWHT),
-	       ansi_fmt(ANSI_RESET));
+	putchar(' ');
+	CPRINTF(ANSI_BWHT, "]");
+	puts("");
 }
 
 static
@@ -198,9 +207,7 @@ head(int nspace, unsigned cols)
 {
 	printf("%*s", nspace, " ");
 	for (unsigned i = 0; i < cols; i++) {
-		printf("%s%3X%s",
-		       ansi_fmt(ANSI_YEL), i,
-		       ansi_fmt(ANSI_RESET));
+		CPRINTF(ANSI_YEL, "%3X", i);
 	}
 	puts("");
 }
@@ -211,23 +218,19 @@ hexii_c(unsigned char c)
 {
 	if (0x00 == c) {
 		if (opt.verbose) {
-			printf("%s00%s",
-			       ansi_fmt(ANSI_BBLK),
-			       ansi_fmt(ANSI_RESET));
+			CPRINTF(ANSI_BBLK, "00");
 		} else {
 			printf("  ");
 		}
 	} else if (0xff == c) {
-		printf("%s%s%s",
-		       ansi_fmt(ANSI_RED), ((opt.verbose) ? "FF" : "##"),
-		       ansi_fmt(ANSI_RESET));
+		CPRINTF(ANSI_RED, "%s", (opt.verbose) ? "FF" : "##");
 	} else if ((isprint(c) && ' ' != c)
-		   || (' ' == c && opt.escape)) {
-		printf((!opt.hex) ? "%s.%c%s"
-		                  : (opt.lowercase) ? "%s%02x%s"
-		                                    : "%s%02X%s",
-		       ansi_fmt(ANSI_CYN), c,
-		       ansi_fmt(ANSI_RESET));
+	           || (' ' == c && opt.escape)) {
+		CPRINTF(ANSI_CYN,
+		        (opt.hex) ? (opt.lowercase) ? "%02x"
+		                                    : "%02X"
+		                  : ".%c",
+		        c);
 	} else if (opt.escape) {
 		switch (c) {
 		case '\a': printf("%s%s%s", ansi_fmt(ANSI_MAG), "\\a", ansi_fmt(ANSI_RESET)); break;
