@@ -242,7 +242,7 @@ cell(unsigned char c)
 
 static
 int
-hexii_r(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsigned cols)
+row(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsigned cols)
 {
 	bool zeros = true;
 	unsigned ncols = (len < off + cols) ? (len - off) : cols;
@@ -288,7 +288,7 @@ hexii(int fd, unsigned cols)
 
 		off_t base = wrlen;
 		while (off - base < len) {
-			int nr = hexii_r(buf, len, base, off - base, addr_wid, cols);
+			int nr = row(buf, len, base, off - base, addr_wid, cols);
 			off += nr;
 		}
 		wrlen += len;
