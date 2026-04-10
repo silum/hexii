@@ -118,9 +118,8 @@ main(int argc, char *argv[])
 	for (; argc; argc--, argv++) {
 		const char* fn = *argv;
 		const bool is_stdin = '-' == fn[0] && '\0' == fn[1];
-		int fd = (is_stdin)
-		     ? STDIN_FILENO
-		     : open(fn, O_RDONLY, 0);
+		int fd = (is_stdin) ? STDIN_FILENO
+		                    : open(fn, O_RDONLY, 0);
 		if (fd < 0) {
 			warn("%s", fn);
 			rval = EXIT_FAILURE;
