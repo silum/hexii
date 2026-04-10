@@ -206,7 +206,7 @@ head(int nspace, unsigned cols)
 
 static
 void
-hexii_c(unsigned char c)
+cell(unsigned char c)
 {
 	if (0x00 == c) {
 		if (opt.verbose) {
@@ -259,7 +259,7 @@ hexii_r(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsign
 	for (; i < cols
 	     && off + i < len; i++) {
 		putchar(' ');
-		hexii_c(buf[off + i]);
+		cell(buf[off + i]);
 	}
 
 	return i;
