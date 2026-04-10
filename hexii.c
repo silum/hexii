@@ -139,7 +139,8 @@ main(int argc, char *argv[])
 			continue;
 		}
 		if (hexii(fd, opt.cols)) {
-			warn("%s", (fd == STDIN_FILENO) ? "stdin" : fn);
+			warn("%s", (fd == STDIN_FILENO) ? "stdin"
+			                                : fn);
 			rval = EXIT_FAILURE;
 		}
 		if (! is_stdin) {
@@ -178,7 +179,8 @@ static
 const char *
 ansi_fmt(const char *s)
 {
-	return (opt.ansi) ? s : "";
+	return (opt.ansi) ? s
+	                  : "";
 }
 
 static
@@ -192,7 +194,8 @@ cell(unsigned char c)
 			printf("  ");
 		}
 	} else if (0xff == c) {
-		CPRINTF(ANSI_RED, "%s", (opt.verbose) ? "FF" : "##");
+		CPRINTF(ANSI_RED, "%s", (opt.verbose) ? "FF"
+		                                      : "##");
 	} else if ((isprint(c) && ' ' != c)
 	           || (' ' == c && opt.escape)) {
 		CPRINTF(ANSI_CYN,
@@ -258,7 +261,8 @@ int
 hexii(int fd, unsigned cols)
 {
 	off_t sz = fsize(fd);
-	int addr_wid = (sz > 0) ? hexwid(sz) : 16;
+	int addr_wid = (sz > 0) ? hexwid(sz)
+	                        : 16;
 	head(addr_wid + 1, cols);
 
 	char buf[cols];
@@ -306,7 +310,8 @@ int
 row(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsigned cols)
 {
 	bool zeros = true;
-	unsigned ncols = (len < off + cols) ? (len - off) : cols;
+	unsigned ncols = (len < off + cols) ? (len - off)
+	                                    : cols;
 	for (unsigned c = 0; c < ncols && zeros; c++) {
 		zeros = ('\0' == buf[off + c]);
 	}
