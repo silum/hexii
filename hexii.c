@@ -35,10 +35,16 @@
 
 char *argv0;
 
+static void addr(int wid, int off, int cols);
 static const char * ansi_fmt(const char *s);
+static void cell(unsigned char c);
+static void eof(unsigned addr_wid, off_t off, unsigned cols);
+static off_t fsize(int fd);
+static void head(int nspace, unsigned cols);
 static int hexii(int, unsigned);
 static int hexwid(unsigned long x);
 static void putescchar(const char c);
+static int row(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsigned cols);
 static void usage(void);
 static void version(void);
 
@@ -170,42 +176,6 @@ ansi_fmt(const char *s)
 
 static
 void
-eof(unsigned addr_wid, off_t off, unsigned cols)
-{
-	if (0 == (off % cols)) {
-		addr(addr_wid, off, cols);
-	}
-	putchar(' ');
-	CPRINTF(ANSI_BWHT, "]");
-	puts("");
-}
-
-static
-off_t
-fsize(int fd)
-{
-	struct stat st;
-	int ret = fstat(fd, &st);
-	if (-1 == ret) {
-		return ret;
-	}
-
-	return st.st_size;
-}
-
-static
-void
-head(int nspace, unsigned cols)
-{
-	printf("%*s", nspace, " ");
-	for (unsigned i = 0; i < cols; i++) {
-		CPRINTF(ANSI_YEL, "%3X", i);
-	}
-	puts("");
-}
-
-static
-void
 cell(unsigned char c)
 {
 	if (0x00 == c) {
@@ -241,28 +211,39 @@ cell(unsigned char c)
 }
 
 static
-int
-row(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsigned cols)
+void
+eof(unsigned addr_wid, off_t off, unsigned cols)
 {
-	bool zeros = true;
-	unsigned ncols = (len < off + cols) ? (len - off) : cols;
-	for (unsigned c = 0; c < ncols && zeros; c++) {
-		zeros = ('\0' == buf[off + c]);
+	if (0 == (off % cols)) {
+		addr(addr_wid, off, cols);
 	}
-	if (zeros && ncols == cols && opt.squash) {
-		return cols;
+	putchar(' ');
+	CPRINTF(ANSI_BWHT, "]");
+	puts("");
+}
+
+static
+off_t
+fsize(int fd)
+{
+	struct stat st;
+	int ret = fstat(fd, &st);
+	if (-1 == ret) {
+		return ret;
 	}
 
-	addr(addr_wid, base + off, cols);
+	return st.st_size;
+}
 
-	unsigned i = 0;
-	for (; i < cols
-	     && off + i < len; i++) {
-		putchar(' ');
-		cell(buf[off + i]);
+static
+void
+head(int nspace, unsigned cols)
+{
+	printf("%*s", nspace, " ");
+	for (unsigned i = 0; i < cols; i++) {
+		CPRINTF(ANSI_YEL, "%3X", i);
 	}
-
-	return i;
+	puts("");
 }
 
 static
@@ -311,6 +292,31 @@ void
 putescchar(const char c)
 {
 	CPRINTF(ANSI_MAG, "\\%c", c);
+}
+
+static
+int
+row(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsigned cols)
+{
+	bool zeros = true;
+	unsigned ncols = (len < off + cols) ? (len - off) : cols;
+	for (unsigned c = 0; c < ncols && zeros; c++) {
+		zeros = ('\0' == buf[off + c]);
+	}
+	if (zeros && ncols == cols && opt.squash) {
+		return cols;
+	}
+
+	addr(addr_wid, base + off, cols);
+
+	unsigned i = 0;
+	for (; i < cols
+	     && off + i < len; i++) {
+		putchar(' ');
+		cell(buf[off + i]);
+	}
+
+	return i;
 }
 
 static
