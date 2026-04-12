@@ -202,20 +202,25 @@ cell(unsigned char c)
 		                                    : "%02X"
 		                  : ".%c",
 		        c);
-	} else if (opt.escape) {
-		switch (c) {
-		case '\a': putescchar('a'); break;
-		case '\b': putescchar('b'); break;
-		case '\033': putescchar('e'); break;
-		case '\f': putescchar('f'); break;
-		case '\n': putescchar('n'); break;
-		case '\r': putescchar('r'); break;
-		case '\t': putescchar('t'); break;
-		case '\v': putescchar('v'); break;
-		}
 	} else {
-		printf((opt.lowercase) ? "%02x"
-		                       : "%02X", c);
+		bool escape = opt.escape;
+		if (escape) {
+			switch (c) {
+			case '\a': putescchar('a'); break;
+			case '\b': putescchar('b'); break;
+			case '\033': putescchar('e'); break;
+			case '\f': putescchar('f'); break;
+			case '\n': putescchar('n'); break;
+			case '\r': putescchar('r'); break;
+			case '\t': putescchar('t'); break;
+			case '\v': putescchar('v'); break;
+			default: escape = false;
+			}
+		}
+		if (!escape) {
+			printf((opt.lowercase) ? "%02x"
+			                       : "%02X", c);
+		}
 	}
 }
 
