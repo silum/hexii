@@ -39,7 +39,7 @@
 
 char *argv0;
 
-static void addr(int wid, int off, int cols);
+static void addr(int wid, off_t off, unsigned cols);
 static const char * ansi_fmt(const char *s);
 static void cell(unsigned char c);
 static void eof(unsigned addr_wid, off_t off, unsigned cols);
@@ -153,24 +153,24 @@ main(int argc, char *argv[])
 
 static
 void
-addr(int wid, int off, int cols)
+addr(int wid, off_t off, unsigned cols)
 {
-	static int prev = 0;
-	int xor = off ^ prev;
+	static off_t prev = 0;
+	off_t xor = off ^ prev;
 
 	int w = wid;
 	if (xor != 0 && cols == (off - prev)) {
 		w = hexwid(xor);
 	}
 
-	int modulo = 1 << (4 * w);  /* 16^w using bit shift */
-	int val = off % modulo;
+	off_t modulo = 1UL << (4 * w);  /* 16^w using bit shift */
+	off_t val = off % modulo;
 
 	puts("");
 	CPRINTF(ANSI_YEL,
-	        (w == wid) ? "%0*X:"
-	                   : "%*X:",
-	        wid, val);
+	        (w == wid) ? "%0*llx:"
+	                   : "%*llX:",
+	        wid, (unsigned long long)val);
 
 	prev = off;
 }
