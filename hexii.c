@@ -196,8 +196,7 @@ cell(unsigned char c)
 	} else if (0xff == c) {
 		CPRINTF(ANSI_RED, "%s", (opt.verbose) ? "FF"
 		                                      : "##");
-	} else if ((isprint(c) && ' ' != c)
-	           || (' ' == c && opt.escape)) {
+	} else if (isprint(c)) {
 		CPRINTF(ANSI_CYN,
 		        (opt.hex) ? (opt.lowercase) ? "%02x"
 		                                    : "%02X"
