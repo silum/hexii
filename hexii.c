@@ -45,7 +45,7 @@ static void cell(unsigned char c);
 static void eof(unsigned addr_wid, off_t off, unsigned cols);
 static off_t fsize(int fd);
 static void head(int nspace, unsigned cols);
-static int hexii(int, unsigned);
+static int hexii(int fd, unsigned cols);
 static int hexwid(unsigned long x);
 static void putescchar(const char c);
 static int row(unsigned char const *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsigned cols);
