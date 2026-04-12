@@ -1,4 +1,4 @@
-.Dd August 28, 2021
+.Dd April 12, 2026
 .Dt HEXII 1
 .Os
 .Sh NAME
@@ -6,8 +6,9 @@
 .Nd a compact binary representation (mixing Hex and ASCII)
 .Sh SYNOPSIS
 .Nm hexii
+.Op Fl aAeEhHqsSvxX
 .Op Fl c Ar number
-.Ar
+.Ar file
 .Nm hexii
 .Op Fl V
 .Sh DESCRIPTION
@@ -19,12 +20,36 @@ in which case the HEX part is useless.
 .Pp
 The following options are available:
 .Bl -tag -width Ds
+.It Fl a
+Enable ANSI color output (default).
+.It Fl A
+Disable ANSI color output.
 .It Fl c Ar number
 Format the output to
 .Ar number
 columns wide.
+.It Fl e
+Enable C escape-character output.
+.It Fl E
+Disable C escape-character output (default).
+.It Fl h
+Enable hex display mode for printable characters.
+.It Fl H
+Disable hex display mode (default).
+.It Fl q
+Quiet mode (disable verbose output).
+.It Fl s
+Squash blank lines (default).
+.It Fl S
+Do not squash blank lines.
+.It Fl v
+Enable verbose output.
 .It Fl V
 Print version information.
+.It Fl x
+Use lowercase hex digits.
+.It Fl X
+Use uppercase hex digits (default).
 .El
 .Sh EXIT STATUS
 The
