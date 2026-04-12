@@ -48,7 +48,7 @@ static void head(int nspace, unsigned cols);
 static int hexii(int, unsigned);
 static int hexwid(unsigned long x);
 static void putescchar(const char c);
-static int row(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsigned cols);
+static int row(unsigned char const *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsigned cols);
 static void usage(void);
 static void version(void);
 
@@ -269,7 +269,7 @@ hexii(int fd, unsigned cols)
 	                        : 16;
 	head(addr_wid + 1, cols);
 
-	char buf[cols];
+	unsigned char buf[cols];
 	size_t wrlen = 0;
 	off_t off = 0;
 	for (;;) {
@@ -311,7 +311,7 @@ putescchar(const char c)
 
 static
 int
-row(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsigned cols)
+row(unsigned char const *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsigned cols)
 {
 	bool zeros = true;
 	unsigned ncols = (len < off + cols) ? (len - off)
