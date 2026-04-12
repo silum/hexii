@@ -46,7 +46,9 @@ to other utilities or redirecting to files without color escape sequences.
 Format the output to display
 .Ar number
 columns (bytes) per row. The value must be between 0 and the maximum column
-limit. The maximum column limit is a compile-time value, and is typically 4096.
+limit. Run
+.Sy hexii
+without any arguments to see the compile-time maximum (typically 4096).
 The default is 16 columns per row.
 .It Fl e
 Enable C-style escape-character output. When enabled, control characters are

@@ -382,6 +382,7 @@ xcmp 2<<'!'
 xcmp 2<<!
 usage: ./hexii [-aAeEhHqsSvxX] [-c num] FILE
        ./hexii -V
+Maximum columns: 4096 (compile-time limit)
 !
 
 # -fin-

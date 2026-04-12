@@ -337,6 +337,7 @@ usage(void)
 {
 	fprintf(stderr, "usage: %s [-aAeEhHqsSvxX] [-c num] FILE\n", argv0);
 	fprintf(stderr, "       %s -V\n", argv0);
+	fprintf(stderr, "Maximum columns: %u (compile-time limit)\n", HEXII_MAX_COLS);
 	exit(EXIT_FAILURE);
 }
 
