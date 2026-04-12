@@ -3,58 +3,166 @@
 .Os
 .Sh NAME
 .Nm hexii
-.Nd a compact binary representation (mixing Hex and ASCII)
+.Nd a compact binary representation mixing hexadecimal and ASCII
 .Sh SYNOPSIS
 .Nm hexii
 .Op Fl aAeEhHqsSvxX
 .Op Fl c Ar number
-.Ar file
+.Ar file...
 .Nm hexii
 .Op Fl V
 .Sh DESCRIPTION
 The
 .Nm
-utility dumps file in HexII format.
-HexII is a mixture of ASCII and Hex because ASCII dump is usually useless, unless there is an ASCII string,
-in which case the HEX part is useless.
+utility displays files in HexII format.
+
 .Pp
+.Bd -literal -offset indent
+HexII is a mixture of ASCII and Hex
+because ASCII dump is usually useless,
+unless there is an ASCII string,
+in which case the HEX part is useless.
+.Ed
+.Pp
+Traditional hex dumps often waste space displaying ASCII representations of
+binary data, while ASCII dumps are useless for non-printable content. HexII
+intelligently interleaves both representations based on content, showing ASCII
+text where useful and hexadecimal values where necessary to maximize
+readability and minimize output clutter.
+.Pp
+The end-of-file is indicated by a solitary closing bracket `]', as it may not be
+present.
+.Sh OPTIONS
 The following options are available:
 .Bl -tag -width Ds
 .It Fl a
-Enable ANSI color output (default).
+Enable ANSI color output for syntax highlighting. This is the default behavior
+and provides colored output for addresses, hex values, and a selection of
+character cells to improve readability in terminals that support color.
 .It Fl A
-Disable ANSI color output.
+Disable ANSI color output, producing plain monochrome text suitable for piping
+to other utilities or redirecting to files without color escape sequences.
 .It Fl c Ar number
-Format the output to
+Format the output to display
 .Ar number
-columns wide.
+columns (bytes) per row. The value must be between 0 and the maximum column
+limit. The maximum column limit is a compile-time value, and is typically 4096.
+The default is 16 columns per row.
 .It Fl e
-Enable C escape-character output.
+Enable C-style escape-character output. When enabled, control characters are
+displayed as escaped sequences (e.g.,
+.Sy \en
+for newline,
+.Sy \et
+for tab) rather than their hexadecimal representation, making control character
+sequences more human-readable.
 .It Fl E
-Disable C escape-character output (default).
+Disable C-style escape-character output, the default behavior. Control
+characters and non-printable bytes are displayed in hexadecimal format.
 .It Fl h
-Enable hex display mode for printable characters.
+Enable hexadecimal display mode for printable characters. When enabled, all
+printable characters are displayed as their hexadecimal byte values instead of
+ASCII representation, providing a pure hex dump output while still maintaining
+the HexII format structure.
 .It Fl H
-Disable hex display mode (default).
+Disable hexadecimal display mode for printable characters, the default.
+Printable ASCII characters are displayed as readable text (prefixed with a dot
+for visual distinction) to improve readability.
 .It Fl q
-Quiet mode (disable verbose output).
+Enable quiet mode, disabling verbose output and setting the tool to its most
+concise display state. This is the default behavior. This option reverses the
+effect of the
+.Fl v
+option.
 .It Fl s
-Squash blank lines (default).
+Squash blank lines (rows of all zero bytes) from the output. When enabled,
+consecutive blank lines are completely omitted, significantly reducing output
+size for files with large blocks of zeros or uninitialized memory regions. This
+is the default behavior.
 .It Fl S
-Do not squash blank lines.
+Suppress blank line squashing, preserving all rows in the output including
+those containing only zero bytes. Use this when you need to see every byte
+location or maintain accurate address continuity for all file offsets.
 .It Fl v
-Enable verbose output.
+Enable verbose output mode. In verbose mode, zero bytes are displayed as
+.Sy 00
+(in color) instead of blank space, and 0xFF bytes are displayed as
+.Sy FF
+instead of
+.Sy ## ,
+providing explicit visual representation of special byte values.
 .It Fl V
-Print version information.
+Display version information and exit.
 .It Fl x
-Use lowercase hex digits.
+Use lowercase hexadecimal digits (a-f) in all hexadecimal output, including
+addresses and byte values.
 .It Fl X
-Use uppercase hex digits (default).
+Use uppercase hexadecimal digits (A-F) in all hexadecimal output. This is the
+default behavior.
 .El
+.Sh BEHAVIOR
+By default,
+.Nm
+combines several display options:
+.Bl -bullet -width Ds
+.It
+ANSI colors are enabled for improved readability
+.It
+Blank lines (all zero bytes) are squashed to reduce clutter
+.It
+Printable ASCII characters are shown as text with a leading dot
+.It
+Non-printable bytes are shown in hexadecimal
+.It
+Addresses and hex values use uppercase letters
+.El
+.Pp
+Option flags can be combined freely. For example,
+.Sy -asvx
+enables ANSI color, squashes blank lines, enables verbose mode, and uses
+lowercase hex.
+.Sh PHILOSOPHY
+.Nm
+follows a minimalist design philosophy in both its output format specification
+and implementation:
+.Pp
+.Bd -literal -offset indent
+"Show what matters. Hide what doesn't."
+.Ed
+.Sh EXAMPLES
+Display a binary file with default settings:
+.Bd -literal -offset indent
+hexii myfile.bin
+.Ed
+.Pp
+Show a file in pure unsquashed hex format without ANSI colors:
+.Bd -literal -offset indent
+hexii -AhSv myfile.bin
+.Ed
+.Pp
+Display a file with verbose output and escape sequences for control characters:
+.Bd -literal -offset indent
+hexii -ve myfile.bin
+.Ed
+.Pp
+Examine with 32 columns per row and lowercase hex digits:
+.Bd -literal -offset indent
+hexii -c 32 -x myfile.bin
+.Ed
 .Sh EXIT STATUS
 The
 .Nm
-utility exits 0 on success, and >0 if an error occurs.
+utility exits with status 0 on successful completion. If an error occurs while
+reading a file, it exits with status greater than 0 and prints an error message
+to standard error.
+.Sh ATTRIBUTION
+The HexII format was originally conceived and implemented by
+.An Ange Albertini
+in the
+.Lk https://github.com/gunmetalbackupgooglecode/corkami corkami
+project.
+This C implementation is a modernized and extended version of the original
+Python concept.
 .Sh SEE ALSO
 .Xr hexdump 1 ,
 .Xr od 1 ,
