@@ -242,11 +242,9 @@ fsize(int fd)
 {
 	struct stat st;
 	int ret = fstat(fd, &st);
-	if (-1 == ret) {
-		return ret;
-	}
 
-	return st.st_size;
+	return (-1 == ret) ? -1
+	                   : st.st_size;
 }
 
 static
