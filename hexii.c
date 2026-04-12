@@ -296,7 +296,9 @@ int
 hexwid(unsigned long x)
 {
 	int w = 1;
-	for (; x > 15; x >>= 4) {  /* bit-shift division by 16 (or 1 hex digit) */
+	const int max_w = 16;  /* Reasonable limit for 64-bit systems */
+	for (; x > 15 && w < max_w; x >>= 4) {
+		/* Bit-shift division by 16 (one hex digit per iteration) */
 		w++;
 	}
 	return w;
