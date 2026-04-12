@@ -326,13 +326,12 @@ row(char *buf, ssize_t len, off_t base, off_t off, unsigned addr_wid, unsigned c
 	addr(addr_wid, base + off, cols);
 
 	unsigned i = 0;
-	for (; i < cols
-	     && off + i < len; i++) {
+	for (; i < ncols; i++) {
 		putchar(' ');
 		cell(buf[off + i]);
 	}
 
-	return i;
+	return ncols;
 }
 
 static
