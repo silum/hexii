@@ -40,7 +40,7 @@
 char *argv0;
 
 static void addr(int wid, off_t off, unsigned cols);
-static const char * ansi_fmt(const char *s);
+static char const * ansi_fmt(char const * const s);
 static void cell(unsigned char c);
 static void eof(unsigned addr_wid, off_t off, unsigned cols);
 static off_t fsize(int fd);
@@ -176,8 +176,8 @@ addr(int wid, off_t off, unsigned cols)
 }
 
 static
-const char *
-ansi_fmt(const char *s)
+char const *
+ansi_fmt(char const * const s)
 {
 	return (opt.ansi) ? s
 	                  : "";
